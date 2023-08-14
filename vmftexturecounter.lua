@@ -37,9 +37,9 @@ concommand.Add("CountLeastUsedTextures", function(player, command, arguments)
 		return
 	end
 
-	file.Write("texturecounter_temp.txt", "vmf\n{" .. vmfInfo .. "\n}") -- Write the VMF file to a temporary file with the required formatting
+	vmfInfo = "vmf\n{\n" .. vmfInfo .. "\n}" -- Add the required formatting to the VMF
 
-	local kvTable = util.KeyValuesToTablePreserveOrder(file.Read("texturecounter_temp.txt", "DATA")) -- Read the temporary file and convert it to a table
+	local kvTable = util.KeyValuesToTablePreserveOrder(vmfInfo) -- Convert to a table
 	local materials = {}
 
 	-- Loop through the table and find all the materials from solids and entities
@@ -75,7 +75,7 @@ concommand.Add("CountLeastUsedTextures", function(player, command, arguments)
 	-- Sort the materials by count
 	table.sort(sortedMaterials, function(a, b) return a.count < b.count end)
 
-	-- Print the top 50 materials with the least amount of occurrences
+	-- Print the top materials with the least amount of occurrences
 	MsgC(Color(200, 200, 50), "TOP " .. count .. " LEAST USED TEXTURES IN " .. string.upper(string.StripExtension(map)) .. ":\n")
 	MsgC(Color(200, 150, 100), "==================================================\n")
 
@@ -84,6 +84,4 @@ concommand.Add("CountLeastUsedTextures", function(player, command, arguments)
 
 		MsgC(Color(200, 200, 100), string.format("%-10s ", material.material), color_white, string.rep(".", 70 - #material.material), Color(100, 150, 255), " " .. material.count, "\n") -- Overcomplicated formatting to make it look nicer
 	end
-
-	file.Delete("texturecounter_temp.txt") -- Delete the temporary file
 end, nil, "Outputs the least used textures in a .vmf file.")
